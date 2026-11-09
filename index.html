@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Petualangan Matematika - Kuis Kelas 4</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --green-1: #66bb6a;
+  --green-2: #43a047;
+  --green-3: #2e7d32;
+  --green-dark: #1b5e20;
+  --yellow: #ffd54f;
+  --yellow-2: #ffb300;
+  --orange: #fb8c00;
+  --brown: #5d4037;
+  --cream: #fff8e1;
+  --paper: #fffdf5;
+  --error: #ef5350;
+  --success: #43a047;
+  --info: #29b6f6;
+  --shadow: 0 8px 24px rgba(0,0,0,0.18);
+}
+body {
+  font-family: 'Comic Sans MS', 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
+  background:
+    radial-gradient(ellipse at top, #a5d6a7 0%, transparent 60%),
+    linear-gradient(180deg, #66bb6a 0%, #2e7d32 60%, #1b5e20 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: var(--brown);
+  line-height: 1.5;
+  padding: 12px;
+  overflow-x: hidden;
+}
+.jungle-deco {
+  position: fixed; pointer-events: none; z-index: 0;
+  font-size: 70px; opacity: 0.22;
+  filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+}
+.jungle-deco.tl { top: 8px; left: 8px; }
+.jungle-deco.tr { top: 8px; right: 8px; transform: scaleX(-1); }
+.jungle-deco.bl { bottom: 8px; left: 8px; }
+.jungle-deco.br { bottom: 8px; right: 8px; transform: scaleX(-1); }
+#app { position: relative; z-index: 1; max-width: 880px; margin: 0 auto; }
+.screen { display: none; animation: fadeIn 0.4s ease; }
+.screen.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
+@keyframes bounce { 0%, 100% { transform: translateY(0);} 50% { transform: translateY(-10px);} }
+@keyframes wiggle { 0%, 100% { transform: rotate(0);} 25% { transform: rotate(-5deg);} 75% { transform: rotate(5deg);} }
+@keyframes pop { 0% { transform: scale(0.5); opacity: 0;} 60% { transform: scale(1.15);} 100% { transform: scale(1); opacity: 1;} }
+@keyframes shake { 0%, 100% { transform: translateX(0);} 25% { transform: translateX(-8px);} 75% { transform: translateX(8px);} }
+@keyframes spin { from { transform: rotate(0);} to { transform: rotate(360deg);} }
+
+/* Cover */
+.cover-card {
+  background: var(--paper);
+  border: 6px solid var(--yellow);
+  border-radius: 28px;
+  padding: 30px 24px 26px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  position: relative;
+}
+.cover-card::before {
+  content: '🌿 🌴 🍃 🌴 🌿';
+  position: absolute; top: 0; left: 0; right: 0;
+  font-size: 22px; letter-spacing: 4px;
+  padding: 6px 0;
+  background: var(--green-3);
+}
+.cover-mascot {
+  font-size: 90px; margin: 30px 0 6px; display: inline-block;
+  animation: bounce 2s ease-in-out infinite;
+}
+.cover-title {
+  font-size: 34px; color: var(--green-dark); font-weight: bold;
+  text-shadow: 2px 2px 0 var(--yellow); margin-bottom: 6px;
+}
+.cover-subtitle {
+  font-size: 17px; color: var(--brown); margin-bottom: 20px;
+}
+.identity-form {
+  background: var(--cream);
+  border: 3px dashed var(--green-2);
+  border-radius: 18px;
+  padding: 18px;
+  margin: 16px 0;
+  text-align: left;
+}
+.form-row { margin-bottom: 14px; }
+.form-row:last-child { margin-bottom: 0; }
+.form-row label {
+  display: block; font-weight: bold; color: var(--green-dark);
+  margin-bottom: 6px; font-size: 16px;
+}
+.form-row input {
+  width: 100%; padding: 12px 14px; font-size: 16px;
+  font-family: inherit; border: 3px solid var(--green-1);
+  border-radius: 12px; background: white; color: var(--brown);
+}
+.form-row input:focus {
+  outline: none; border-color: var(--green-3);
+  box-shadow: 0 0 0 4px rgba(67,160,71,0.2);
+}
+.cover-tips {
+  margin-top: 14px; font-size: 14px; color: var(--green-3);
+  background: var(--cream); padding: 10px 14px; border-radius: 12px;
+  border-left: 4px solid var(--yellow-2);
+}
+
+/* Buttons */
+.btn {
+  font-family: inherit; font-weight: bold; font-size: 17px;
+  padding: 13px 24px; border: none; border-radius: 16px;
+  cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+  display: inline-flex; align-items: center; gap: 8px;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+}
+.btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 0 rgba(0,0,0,0.2); }
+.btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: 0 2px 0 rgba(0,0,0,0.15); }
+.btn-primary {
+  background: linear-gradient(180deg, var(--yellow) 0%, var(--orange) 100%);
+  color: white; text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+}
+.btn-secondary {
+  background: linear-gradient(180deg, var(--green-1) 0%, var(--green-3) 100%);
+  color: white;
+}
+.btn-ghost {
+  background: white; color: var(--green-dark);
+  border: 3px solid var(--green-2); box-shadow: 0 4px 0 var(--green-3);
+}
+
+/* Progress */
+.progress-bar {
+  background: var(--paper);
+  border: 4px solid var(--green-3);
+  border-radius: 20px;
+  padding: 12px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+.progress-stops {
+  display: flex; justify-content: space-between; align-items: center;
+  position: relative; padding: 0 4px;
+}
+.progress-stops::before {
+  content: ''; position: absolute; top: 50%; left: 18px; right: 18px;
+  height: 6px; background: var(--green-1);
+  transform: translateY(-50%); z-index: 0; border-radius: 3px;
+}
+.stop {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: white; border: 3px solid var(--green-3);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: bold; font-size: 13px; color: var(--green-dark);
+  position: relative; z-index: 1; transition: all 0.3s;
+  flex-shrink: 0;
+}
+.stop.done {
+  background: var(--success); color: white; border-color: var(--green-dark);
+}
+.stop.current {
+  background: var(--yellow); border-color: var(--orange);
+  box-shadow: 0 0 0 4px rgba(255,179,0,0.3); transform: scale(1.2);
+}
+.stop.fail {
+  background: #ffcdd2; border-color: var(--error); color: #c62828;
+}
+
+/* Question card */
+.q-card {
+  background: var(--paper); border: 6px solid var(--green-2);
+  border-radius: 24px; padding: 22px; box-shadow: var(--shadow);
+}
+.q-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 14px; padding-bottom: 14px;
+  border-bottom: 3px dashed var(--green-1);
+}
+.q-animal {
+  font-size: 54px; flex-shrink: 0; animation: wiggle 3s ease-in-out infinite;
+}
+.q-meta { flex: 1; min-width: 0; }
+.q-stop-name {
+  font-size: 13px; color: var(--green-3); font-weight: bold;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.q-number {
+  font-size: 20px; color: var(--green-dark); font-weight: bold;
+}
+.q-text {
+  font-size: 19px; color: var(--brown); margin-bottom: 8px; line-height: 1.5;
+}
+.q-instruction {
+  font-size: 14px; color: var(--green-3); background: var(--cream);
+  padding: 8px 14px; border-radius: 10px; margin-bottom: 16px;
+  border-left: 4px solid var(--yellow-2);
+}
+.q-answer-area { margin: 18px 0; min-height: 80px; }
+
+/* Click image / chips */
+.chip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 10px;
+}
+.chip {
+  background: white; border: 3px solid var(--green-2);
+  border-radius: 14px; padding: 14px 4px;
+  font-size: 22px; font-weight: bold; color: var(--green-dark);
+  cursor: pointer; text-align: center; transition: all 0.15s;
+  user-select: none;
+}
+.chip:hover { background: var(--cream); transform: translateY(-2px); }
+.chip.selected {
+  background: var(--yellow); border-color: var(--orange); color: var(--brown);
+  transform: scale(1.05); box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+.image-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+}
+.image-option {
+  background: white; border: 4px solid var(--green-2);
+  border-radius: 18px; padding: 14px; text-align: center;
+  cursor: pointer; transition: all 0.2s; user-select: none;
+}
+.image-option:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+.image-option.selected {
+  border-color: var(--orange); background: var(--cream); transform: scale(1.03);
+}
+.image-option .img { font-size: 46px; margin-bottom: 6px; }
+.image-option .label { font-weight: bold; color: var(--green-dark); font-size: 16px; }
+
+/* Number input */
+.number-input {
+  width: 120px; padding: 12px; font-size: 26px; font-weight: bold;
+  text-align: center; border: 4px solid var(--green-2);
+  border-radius: 14px; background: white; color: var(--brown);
+  font-family: inherit;
+}
+.number-input:focus {
+  outline: none; border-color: var(--orange);
+  box-shadow: 0 0 0 4px rgba(255,179,0,0.2);
+}
+.input-row {
+  display: flex; align-items: center; gap: 12px;
+  justify-content: center; flex-wrap: wrap; margin: 8px 0;
+}
+.input-label { font-size: 17px; color: var(--brown); font-weight: bold; }
+.multi-input { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.multi-input .number-input { width: 80px; font-size: 20px; padding: 10px 6px; }
+
+/* True/False */
+.tf-buttons {
+  display: flex; gap: 20px; justify-content: center; margin: 18px 0;
+}
+.tf-btn {
+  flex: 1; max-width: 220px; padding: 22px;
+  font-size: 22px; font-weight: bold; border: 4px solid;
+  border-radius: 18px; cursor: pointer; transition: all 0.2s;
+  font-family: inherit; background: white;
+}
+.tf-btn.benar { border-color: var(--success); color: var(--success); }
+.tf-btn.benar:hover, .tf-btn.benar.selected {
+  background: var(--success); color: white; transform: translateY(-4px);
+}
+.tf-btn.salah { border-color: var(--error); color: var(--error); }
+.tf-btn.salah:hover, .tf-btn.salah.selected {
+  background: var(--error); color: white; transform: translateY(-4px);
+}
+
+/* Multi-step */
+.multi-step {
+  background: var(--cream); border: 3px solid var(--green-1);
+  border-radius: 16px; padding: 18px;
+}
+.step {
+  margin-bottom: 14px; padding-bottom: 14px;
+  border-bottom: 2px dashed var(--green-1);
+}
+.step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.step-label {
+  font-weight: bold; color: var(--green-dark); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 8px; font-size: 15px;
+}
+.step-num {
+  background: var(--green-3); color: white;
+  width: 26px; height: 26px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+
+/* Drag & drop */
+.drag-pool {
+  background: var(--cream); border: 3px dashed var(--green-2);
+  border-radius: 16px; padding: 14px; margin: 10px 0;
+  min-height: 70px; display: flex; flex-wrap: wrap; gap: 10px;
+  align-items: center; justify-content: center;
+}
+.drag-pool-label, .drop-zone-label {
+  width: 100%; text-align: center; font-weight: bold;
+  color: var(--green-3); font-size: 13px; margin-bottom: 4px;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.drag-item {
+  background: linear-gradient(180deg, var(--yellow) 0%, var(--yellow-2) 100%);
+  border: 3px solid var(--orange); border-radius: 12px;
+  padding: 10px 16px; font-size: 20px; font-weight: bold;
+  color: var(--brown); cursor: grab; user-select: none;
+  touch-action: none; box-shadow: 0 3px 0 rgba(0,0,0,0.15);
+  transition: transform 0.15s; display: inline-block;
+}
+.drag-item:hover { transform: translateY(-2px); }
+.drag-item.dragging { opacity: 0.35; }
+.drag-item.placed {
+  background: linear-gradient(180deg, var(--green-1) 0%, var(--green-3) 100%);
+  border-color: var(--green-dark); color: white;
+}
+.drag-clone {
+  position: fixed; z-index: 9999; pointer-events: none;
+  transform: rotate(3deg) scale(1.1);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+.drop-zone {
+  background: white; border: 3px dashed var(--green-2);
+  border-radius: 14px; padding: 14px; min-height: 70px;
+  display: flex; flex-wrap: wrap; gap: 8px;
+  align-items: center; transition: all 0.2s;
+}
+.drop-zone.drag-over {
+  background: var(--cream); border-color: var(--orange);
+  border-style: solid; transform: scale(1.02);
+}
+.factor-display {
+  background: var(--cream); border: 2px solid var(--green-1);
+  border-radius: 12px; padding: 10px 14px; margin: 8px 0;
+  font-size: 15px; color: var(--brown); text-align: center;
+}
+.factor-display b { color: var(--green-dark); }
+.drop-result {
+  font-size: 28px; font-weight: bold; color: var(--orange);
+  text-align: center; margin-top: 8px;
+}
+
+/* Feedback */
+.feedback {
+  margin: 14px 0; padding: 14px; border-radius: 14px;
+  font-size: 16px; font-weight: bold; text-align: center;
+  display: none;
+}
+.feedback.show { display: block; animation: pop 0.4s ease; }
+.feedback.correct {
+  background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+  color: var(--green-dark); border: 3px solid var(--success);
+}
+.feedback.incorrect {
+  background: linear-gradient(135deg, #ffccbc 0%, #ffab91 100%);
+  color: #bf360c; border: 3px solid var(--error);
+  animation: shake 0.4s ease, pop 0.4s ease;
+}
+.feedback.info {
+  background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 100%);
+  color: #e65100; border: 3px solid var(--orange);
+}
+.feedback-emoji { font-size: 32px; display: block; margin-bottom: 4px; }
+.attempts-indicator {
+  display: flex; gap: 6px; justify-content: center;
+  margin: 6px 0 2px; align-items: center;
+}
+.attempts-indicator .label {
+  font-size: 13px; color: var(--green-3); font-weight: bold; margin-right: 4px;
+}
+.attempt-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #ddd; border: 2px solid #bbb;
+}
+.attempt-dot.used { background: var(--error); border-color: #b71c1c; }
+.attempt-dot.available { background: var(--success); border-color: var(--green-dark); }
+
+/* Actions */
+.actions {
+  display: flex; gap: 10px; justify-content: center;
+  margin-top: 16px; flex-wrap: wrap;
+}
+
+/* Result */
+.result-card {
+  background: var(--paper); border: 8px solid var(--yellow);
+  border-radius: 28px; padding: 28px 22px; box-shadow: var(--shadow);
+  text-align: center;
+}
+.result-mascot {
+  font-size: 90px; margin: 6px 0; display: inline-block;
+  animation: bounce 1.5s ease-in-out infinite;
+}
+.result-title {
+  font-size: 30px; color: var(--green-dark); font-weight: bold;
+  text-shadow: 2px 2px 0 var(--yellow); margin-bottom: 6px;
+}
+.result-identity {
+  font-size: 17px; color: var(--brown); margin-bottom: 12px;
+  background: var(--cream); padding: 10px 16px; border-radius: 12px;
+  display: inline-block;
+}
+.stars {
+  font-size: 56px; margin: 14px 0; display: flex;
+  justify-content: center; gap: 6px;
+}
+.star { display: inline-block; animation: pop 0.5s ease backwards; }
+.star:nth-child(1) { animation-delay: 0.2s; }
+.star:nth-child(2) { animation-delay: 0.4s; }
+.star:nth-child(3) { animation-delay: 0.6s; }
+.star.empty { filter: grayscale(1); opacity: 0.3; }
+.score-display {
+  font-size: 44px; font-weight: bold; color: var(--orange); margin: 6px 0;
+}
+.score-max { font-size: 22px; color: var(--brown); }
+.result-message {
+  font-size: 16px; color: var(--green-dark); background: var(--cream);
+  padding: 12px 16px; border-radius: 14px; margin: 14px 0;
+  border-left: 4px solid var(--yellow-2); text-align: left;
+}
+.result-breakdown {
+  background: white; border: 3px solid var(--green-1);
+  border-radius: 16px; padding: 12px; margin: 14px 0; text-align: left;
+  overflow-x: auto;
+}
+.breakdown-title {
+  font-weight: bold; color: var(--green-dark); margin-bottom: 8px;
+  text-align: center; font-size: 17px;
+}
+.breakdown-row {
+  display: grid; grid-template-columns: 26px 1fr 70px 50px;
+  gap: 8px; padding: 7px 6px; border-bottom: 1px solid var(--cream);
+  align-items: center; font-size: 13px;
+}
+.breakdown-row.header {
+  font-weight: bold; color: var(--green-3);
+  background: var(--cream); border-radius: 8px; font-size: 12px;
+}
+.breakdown-row .status { text-align: center; font-weight: bold; }
+.breakdown-row .pts { text-align: center; font-weight: bold; color: var(--orange); }
+.breakdown-row .qshort { color: var(--brown); }
+.signature {
+  margin-top: 20px; display: flex; justify-content: space-around;
+  gap: 20px; text-align: center; font-size: 14px; color: var(--brown);
+}
+.signature .line {
+  border-top: 2px dashed var(--green-3);
+  margin-top: 40px; padding-top: 6px; min-width: 180px;
+}
+
+/* Print */
+@media print {
+  body { background: white !important; padding: 0; }
+  .jungle-deco, .no-print, .btn { display: none !important; }
+  .screen { display: none !important; }
+  #result-screen.active { display: block !important; }
+  .result-card { border: 2px solid #333; box-shadow: none; padding: 16px; }
+  .result-mascot, .stars { font-size: 36px; }
+  .breakdown-row { font-size: 11px; }
+  .signature { font-size: 12px; }
+}
+
+@media (max-width: 600px) {
+  .cover-title { font-size: 24px; }
+  .q-text { font-size: 16px; }
+  .q-animal { font-size: 42px; }
+  .stop { width: 26px; height: 26px; font-size: 10px; }
+  .progress-stops { padding: 0 2px; }
+  .progress-stops::before { left: 12px; right: 12px; }
+  .number-input { width: 90px; font-size: 22px; }
+  .multi-input .number-input { width: 64px; font-size: 16px; padding: 8px 4px; }
+  .chip { font-size: 18px; padding: 10px 4px; }
+  .image-option .img { font-size: 38px; }
+  .btn { font-size: 15px; padding: 11px 18px; }
+  .breakdown-row { grid-template-columns: 22px 1fr 56px 40px; font-size: 11px; }
+  .drag-item { font-size: 17px; padding: 8px 12px; }
+}
+</style>
+</head>
+<body>
+
+<div class="jungle-deco tl">🌿</div>
+<div class="jungle-deco tr">🌴</div>
+<div class="jungle-deco bl">🍃</div>
+<div class="jungle-deco br">🌿</div>
+
+<div id="app">
+  <section id="cover-screen" class="screen active">
+    <div class="cover-card">
+      <div class="cover-mascot">🐯</div>
+      <h1 class="cover-title">Petualangan Matematika</h1>
+      <p class="cover-subtitle">Kuis Faktor, Kelipatan, FPB &amp; KPK<br>untuk Siswa Kelas 4 SD</p>
+      <div class="identity-form">
+        <div class="form-row">
+          <label for="student-name">👋 Nama Lengkap</label>
+          <input type="text" id="student-name" placeholder="Tulis namamu di sini..." autocomplete="off">
+        </div>
+        <div class="form-row">
+          <label for="student-class">🎒 Kelas</label>
+          <input type="text" id="student-class" placeholder="Contoh: 4A" autocomplete="off">
+        </div>
+      </div>
+      <button class="btn btn-primary" id="start-btn" disabled>🚀 Mulai Petualangan!</button>
+      <div class="cover-tips">
+        📝 Isi dulu namamu dan kelasm untuk memulai!<br>
+        ⚠️ Kerjakan soal secara berurutan — kamu tidak bisa lanjut sebelum soal sekarang selesai.<br>
+        🔁 Setiap soal boleh diulang <b>1 kali</b> jika jawabanmu salah.
+      </div>
+    </div>
+  </section>
+
+  <section id="quiz-screen" class="screen">
+    <div class="progress-bar">
+      <div class="progress-stops" id="progress-stops"></div>
+    </div>
+    <div class="q-card" id="q-card"></div>
+  </section>
+
+  <section id="result-screen" class="screen">
+    <div class="result-card" id="result-card"></div>
+  </section>
+</div>
+
+<script>
+"use strict";
+
+/* ============ DATA SOAL ============ */
+const QUESTIONS = [
+  {
+    id: 1, stop: "Pohon Bijak", animal: "🐵", animalName: "Monyet Bibo",
+    type: "click-multi",
+    text: "Tentukan semua faktor dari bilangan 42.",
+    instruction: "Klik semua angka yang merupakan faktor dari 42! (Pilih lebih dari satu)",
+    options: [1, 2, 3, 4, 5, 6, 7, 8, 14, 21, 42, 50],
+    correct: [1, 2, 3, 6, 7, 14, 21, 42],
+    short: "Faktor 42",
+    explanation: "Faktor adalah angka yang dapat membagi habis 42. 42 = 1×42 = 2×21 = 3×14 = 6×7. Jadi semua faktornya: 1, 2, 3, 6, 7, 14, 21, 42 (ada 8 faktor).",
+    correctText: "1, 2, 3, 6, 7, 14, 21, 42"
+  },
+  {
+    id: 2, stop: "Sungai Kelipatan", animal: "🐸", animalName: "Katak Lompat",
+    type: "ketik-banyak",
+    text: "Sebutkan 5 kelipatan pertama dari angka 9.",
+    instruction: "Ketik 5 kelipatan pertama dari 9 secara berurutan pada kotak di bawah ini!",
+    count: 5,
+    correct: [9, 18, 27, 36, 45],
+    short: "5 kelipatan 9",
+    explanation: "Kelipatan adalah hasil perkalian suatu bilangan dengan 1, 2, 3, dan seterusnya. 5 kelipatan pertama dari 9: 9×1=9, 9×2=18, 9×3=27, 9×4=36, 9×5=45.",
+    correctText: "9, 18, 27, 36, 45"
+  },
+  {
+    id: 3, stop: "Hutan Faktor", animal: "🦜", animalName: "Beo Pintar",
+    type: "drag-fpb",
+    text: "Carilah FPB dari 24 dan 36 dengan cara mencari faktor persekutuan.",
+    instruction: "Lihat daftar faktor 24 & 36 di bawah. SERET kartu yang merupakan FAKTOR PERSEKUTUAN (ada di 24 DAN 36) ke Kotak Faktor Persekutuan!",
+    factorsA: [1, 2, 3, 4, 6, 8, 12, 24],
+    factorsB: [1, 2, 3, 4, 6, 9, 12, 18, 36],
+    aLabel: "24", bLabel: "36",
+    pool: [1, 2, 3, 4, 6, 8, 9, 12, 18, 24, 36],
+    correct: [1, 2, 3, 4, 6, 12],
+    result: 12, resultType: "fpb",
+    short: "FPB(24,36)",
+    explanation: "Faktor 24 = 1, 2, 3, 4, 6, 8, 12, 24. Faktor 36 = 1, 2, 3, 4, 6, 9, 12, 18, 36. Faktor persekutuan (yang ada di kedua bilangan) = 1, 2, 3, 4, 6, 12. FPB adalah faktor persekutuan TERBESAR, yaitu 12.",
+    correctText: "Faktor persekutuan: 1, 2, 3, 4, 6, 12 → FPB = 12"
+  },
+  {
+    id: 4, stop: "Gua KPK", animal: "🦇", animalName: "Kelelawar Gua",
+    type: "ketik-satu",
+    text: "Carilah KPK dari 15 dan 25 dengan cara kelipatan persekutuan.",
+    instruction: "Ketik jawabannya pada kotak di bawah! (Petunjuk: tulis beberapa kelipatan 15 dan 25, lalu cari kelipatan persekutuan terkecilnya)",
+    suffix: "",
+    correct: 75,
+    accept: ["75"],
+    short: "KPK(15,25)",
+    explanation: "Kelipatan 15 = 15, 30, 45, 60, 75, ... Kelipatan 25 = 25, 50, 75, 100, ... Kelipatan persekutuan terkecil yang sama = 75. Jadi KPK(15, 25) = 75.",
+    correctText: "75"
+  },
+  {
+    id: 5, stop: "Menara Lampu", animal: "🦉", animalName: "Burung Hantu",
+    type: "isian-bertingkat",
+    text: "Lampu A menyala setiap 8 detik, lampu B setiap 12 detik. Jika keduanya menyala bersama pukul 19.00, pukul berapa keduanya menyala bersama lagi untuk kedua kalinya?",
+    instruction: "Isi dua langkah di bawah ini secara berurutan! (Petunjuk: cari kelipatan persekutuan terkecil dari 8 dan 12)",
+    steps: [
+      { label: "Kedua lampu menyala bersama lagi setiap", suffix: "detik", answer: 24, accept: ["24"] },
+      { label: "Lampu menyala bersama untuk kedua kalinya pada pukul", suffix: "(format: jam.menit.detik, contoh: 19.00.30)", answer: "time", accept: ["19.00.24", "19:00:24", "19.00:24", "19:00.24"] }
+    ],
+    short: "Soal Lampu",
+    explanation: "Kelipatan 8 = 8, 16, 24, ... Kelipatan 12 = 12, 24, ... Kelipatan persekutuan terkecil = 24, jadi kedua lampu menyala bersama setiap 24 detik. Saat mulai pukul 19.00 mereka menyala bersama (itu yang pertama). Untuk kedua kalinya = 24 detik kemudian = pukul 19.00.24 (19.00 lewat 24 detik).",
+    correctText: "Setiap 24 detik, jam = 19.00.24"
+  },
+  {
+    id: 6, stop: "Kebun Buah Ibu", animal: "🐘", animalName: "Gajah Buah",
+    type: "click-single-image",
+    text: "Ibu memiliki 48 jeruk dan 60 apel. Ibu ingin membaginya ke dalam plastik dengan jumlah sama banyak. Berapa jumlah plastik paling banyak yang dibutuhkan Ibu?",
+    instruction: "Klik gambar jawaban yang benar!",
+    options: [
+      { value: 6, img: "📦", label: "6 plastik" },
+      { value: 10, img: "📦", label: "10 plastik" },
+      { value: 12, img: "📦", label: "12 plastik" },
+      { value: 15, img: "📦", label: "15 plastik" }
+    ],
+    correct: 12,
+    short: "48 jeruk, 60 apel",
+    explanation: "Mencari jumlah plastik terbanyak dengan isi sama = mencari FPB(48, 60). Faktor 48 = 1, 2, 3, 4, 6, 8, 12, 16, 24, 48. Faktor 60 = 1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60. Faktor persekutuan terbesar = 12. Jadi paling banyak 12 plastik (tiap plastik berisi 4 jeruk & 5 apel).",
+    correctText: "12 plastik"
+  },
+  {
+    id: 7, stop: "Tiga Batu Persahabatan", animal: "🐯", animalName: "Macan Tiga",
+    type: "benar-salah",
+    text: "Diberikan bilangan 12, 18, dan 30. Pernyataan: \"FPB dari ketiga bilangan tersebut adalah 6.\" Benar atau salah?",
+    instruction: "Klik Benar atau Salah!",
+    statement: "FPB(12, 18, 30) = 6",
+    correct: "benar",
+    short: "FPB(12,18,30)",
+    explanation: "Faktor 12 = 1, 2, 3, 4, 6, 12. Faktor 18 = 1, 2, 3, 6, 9, 18. Faktor 30 = 1, 2, 3, 5, 6, 10, 15, 30. Faktor persekutuan ketiganya = 1, 2, 3, 6. Faktor persekutuan TERBESAR (FPB) = 6. Jadi pernyataan BENAR.",
+    correctText: "Benar (FPB = 6)"
+  },
+  {
+    id: 8, stop: "Tiga Air Terjun", animal: "🦝", animalName: "Rakun Bijak",
+    type: "drag-kpk",
+    text: "Tentukan KPK dari 20, 30, dan 45 dengan cara mencari kelipatan persekutuan.",
+    instruction: "Lihat daftar kelipatan 20, 30, & 45 di bawah. SERET kartu yang merupakan KELIPATAN PERSEKUTUAN (ada di 20 DAN 30 DAN 45) ke Kotak Kelipatan Persekutuan!",
+    factors: [
+      { num: 20, primes: [20, 40, 60, 80, 100, 120, 140, 160, 180] },
+      { num: 30, primes: [30, 60, 90, 120, 150, 180] },
+      { num: 45, primes: [45, 90, 135, 180] }
+    ],
+    pool: [20, 30, 40, 45, 60, 80, 90, 100, 120, 135, 140, 150, 160, 180],
+    correct: [180],
+    result: 180, resultType: "kpk",
+    short: "KPK(20,30,45)",
+    explanation: "Kelipatan persekutuan dari 20, 30, dan 45 (yang muncul di ketiganya) dalam daftar di atas hanyalah 180. KPK adalah kelipatan persekutuan TERKECIL, yaitu 180.",
+    correctText: "Kelipatan persekutuan: 180 → KPK = 180"
+  },
+  {
+    id: 9, stop: "Toko Kue Hutan", animal: "🐻", animalName: "Beranda Beruang",
+    type: "ketik-satu",
+    text: "Sebuah toko kue menerima kiriman telur setiap 6 hari dan terigu setiap 10 hari. Jika hari ini mereka menerima keduanya, berapa hari lagi mereka akan menerima kiriman telur dan terigu di hari yang sama?",
+    instruction: "Ketik jawabannya pada kotak di bawah! (dalam hari)",
+    suffix: "hari",
+    correct: 30,
+    accept: ["30"],
+    short: "Telur & terigu",
+    explanation: "Mencari KPK(6, 10). Kelipatan 6 = 6, 12, 18, 24, 30, ... Kelipatan 10 = 10, 20, 30, ... Kelipatan persekutuan terkecil = 30. Jadi mereka menerima kiriman bersama lagi 30 hari lagi.",
+    correctText: "30 hari"
+  },
+  {
+    id: 10, stop: "Harta Karun Bilangan", animal: "🦜", animalName: "Beo Harta",
+    type: "isian-bertingkat",
+    text: "Cari dua bilangan yang memiliki FPB 6 dan KPK 36.",
+    instruction: "Isi dua bilangan tersebut pada kotak di bawah! (Urutan bebas)",
+    steps: [
+      { label: "Bilangan pertama", suffix: "", answer: "pair", accept: [] },
+      { label: "Bilangan kedua", suffix: "", answer: "pair", accept: [] }
+    ],
+    pairs: [[6, 36], [12, 18], [36, 6], [18, 12]],
+    short: "FPB 6, KPK 36",
+    explanation: "Kita cari 2 bilangan yang faktor persekutuan TERBESAR-nya = 6, dan kelipatan persekutuan TERKECIL-nya = 36. Coba 6 dan 36: faktor persekutuan terbesar = 6 ✓, kelipatan persekutuan terkecil = 36 ✓. Coba 12 dan 18: faktor 12 = 1,2,3,4,6,12; faktor 18 = 1,2,3,6,9,18; persekutuan terbesar = 6 ✓, kelipatan persekutuan terkecil = 36 ✓. Jadi jawabannya 6 dan 36, atau 12 dan 18.",
+    correctText: "6 dan 36, atau 12 dan 18"
+  }
+];
+
+/* ============ STATE ============ */
+const STATE = {
+  studentName: "", studentClass: "",
+  current: 0, attempts: 0, maxAttempts: 2,
+  results: [] // {correct:bool, attempts:int, points:int, userAnswer, correctAnswer}
+};
+
+const FEEDBACK_BENAR = [
+  ["🎉","Hebat! Kamu menjawab dengan benar!"],
+  ["🌟","Mantap! Jawabanmu tepat sekali!"],
+  ["👏","Pintar sekali! Lanjutkan petualanganmu!"],
+  ["🦁","Rawrr! Kamu anak pintar!"],
+  ["🌈","Sempurna! Kamu jagoan matematika!"],
+  ["✨","Keren! Otakmu cemerlang hari ini!"],
+  ["🏆","Luar biasa! Paham benar materinya!"],
+  ["🐵","Yey! Monyet Bibo bangga padamu!"]
+];
+const FEEDBACK_SALAH = [
+  ["🤔","Hampir benar! Coba periksa lagi ya, jangan menyerah!"],
+  ["🐯","Belum tepat, tapi kamu pasti bisa! Coba sekali lagi!"],
+  ["🍃","Yah, masih salah. Pikirkan pelan-pelan, kamu bisa!"],
+  ["🦉","Hoo... belum tepat. Perhatikan baik-baik soalnya ya!"],
+  ["🌱","Belum benar, tapi setiap juara pernah gagal. Coba lagi!"]
+];
+const FEEDBACK_TAMAT = [
+  ["📖","Jawaban benarnya sudah ditampilkan. Yuk pelajari, lalu lanjut!"],
+  ["💡","Belum beruntung kali ini. Lihat jawabannya, lalu lanjut ke soal berikutnya!"],
+  ["🔍","Pelajari pembahasannya ya — itu kunci untuk soal selanjutnya!"]
+];
+
+function pickFeedback(arr, seed) {
+  return arr[seed % arr.length];
+}
+
+/* ============ COVER ============ */
+const nameInput = document.getElementById('student-name');
+const classInput = document.getElementById('student-class');
+const startBtn = document.getElementById('start-btn');
+
+function checkStart() {
+  startBtn.disabled = !(nameInput.value.trim() && classInput.value.trim());
+}
+nameInput.addEventListener('input', checkStart);
+classInput.addEventListener('input', checkStart);
+startBtn.addEventListener('click', () => {
+  STATE.studentName = nameInput.value.trim();
+  STATE.studentClass = classInput.value.trim();
+  STATE.current = 0;
+  STATE.results = [];
+  showScreen('quiz-screen');
+  renderQuestion();
+});
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ============ PROGRESS ============ */
+function renderProgress() {
+  const container = document.getElementById('progress-stops');
+  container.innerHTML = '';
+  for (let i = 0; i < QUESTIONS.length; i++) {
+    const stop = document.createElement('div');
+    stop.className = 'stop';
+    if (STATE.results[i]) {
+      stop.classList.add(STATE.results[i].correct ? 'done' : 'fail');
+      stop.textContent = STATE.results[i].correct ? '✓' : '✗';
+    } else if (i === STATE.current) {
+      stop.classList.add('current');
+      stop.textContent = (i + 1);
+    } else {
+      stop.textContent = (i + 1);
+    }
+    container.appendChild(stop);
+  }
+}
+
+/* ============ QUESTION RENDER ============ */
+function renderQuestion() {
+  renderProgress();
+  const q = QUESTIONS[STATE.current];
+  STATE.attempts = 0;
+  const card = document.getElementById('q-card');
+  let html = `
+    <div class="q-header">
+      <div class="q-animal">${q.animal}</div>
+      <div class="q-meta">
+        <div class="q-stop-name">📍 ${q.stop} — Teman: ${q.animalName}</div>
+        <div class="q-number">Soal ${q.id} dari ${QUESTIONS.length}</div>
+      </div>
+    </div>
+    <div class="q-text">${q.text}</div>
+    <div class="q-instruction">📝 ${q.instruction}</div>
+    <div class="q-answer-area" id="answer-area"></div>
+    <div class="attempts-indicator">
+      <span class="label">Kesempatan:</span>
+      <span class="attempt-dot available" id="dot-1"></span>
+      <span class="attempt-dot" id="dot-2"></span>
+    </div>
+    <div class="feedback" id="feedback"></div>
+    <div class="actions" id="actions">
+      <button class="btn btn-primary" id="submit-btn">✅ Periksa Jawaban</button>
+    </div>
+  `;
+  card.innerHTML = html;
+  renderAnswerArea(q);
+  document.getElementById('submit-btn').addEventListener('click', () => handleSubmit(q));
+}
+
+function renderAnswerArea(q) {
+  const area = document.getElementById('answer-area');
+  switch (q.type) {
+    case 'click-multi': renderClickMulti(area, q); break;
+    case 'click-single-image': renderClickSingleImage(area, q); break;
+    case 'ketik-satu': renderKetikSatu(area, q); break;
+    case 'ketik-banyak': renderKetikBanyak(area, q); break;
+    case 'benar-salah': renderBenarSalah(area, q); break;
+    case 'isian-bertingkat': renderIsianBertingkat(area, q); break;
+    case 'drag-fpb': renderDragFPB(area, q); break;
+    case 'drag-kpk': renderDragKPK(area, q); break;
+  }
+}
+
+/* --- Tipe: Klik banyak (multi-select chips) --- */
+function renderClickMulti(area, q) {
+  area.innerHTML = '<div class="chip-grid" id="chip-grid"></div>';
+  const grid = document.getElementById('chip-grid');
+  q.options.forEach(v => {
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = v;
+    chip.dataset.value = v;
+    chip.addEventListener('click', () => chip.classList.toggle('selected'));
+    grid.appendChild(chip);
+  });
+}
+function getClickMulti() {
+  return Array.from(document.querySelectorAll('#chip-grid .chip.selected'))
+    .map(c => parseInt(c.dataset.value, 10))
+    .sort((a, b) => a - b);
+}
+
+/* --- Tipe: Klik gambar tunggal --- */
+function renderClickSingleImage(area, q) {
+  area.innerHTML = '<div class="image-options" id="img-options"></div>';
+  const grid = document.getElementById('img-options');
+  q.options.forEach(opt => {
+    const div = document.createElement('div');
+    div.className = 'image-option';
+    div.dataset.value = opt.value;
+    div.innerHTML = `<div class="img">${opt.img}</div><div class="label">${opt.label}</div>`;
+    div.addEventListener('click', () => {
+      document.querySelectorAll('#img-options .image-option').forEach(o => o.classList.remove('selected'));
+      div.classList.add('selected');
+    });
+    grid.appendChild(div);
+  });
+}
+function getClickSingleImage() {
+  const sel = document.querySelector('#img-options .image-option.selected');
+  return sel ? parseInt(sel.dataset.value, 10) : null;
+}
+
+/* --- Tipe: Ketik satu angka --- */
+function renderKetikSatu(area, q) {
+  area.innerHTML = `
+    <div class="input-row">
+      <input type="text" inputmode="numeric" class="number-input" id="ketik-satu" placeholder="..." autocomplete="off">
+      <span class="input-label">${q.suffix || ''}</span>
+    </div>
+  `;
+  const input = document.getElementById('ketik-satu');
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('submit-btn').click(); });
+}
+function getKetikSatu() {
+  return document.getElementById('ketik-satu').value.trim();
+}
+
+/* --- Tipe: Ketik banyak (5 kelipatan) --- */
+function renderKetikBanyak(area, q) {
+  let html = '<div class="multi-input">';
+  for (let i = 0; i < q.count; i++) {
+    html += `<input type="text" inputmode="numeric" class="number-input ketik-banyak" data-idx="${i}" placeholder="ke-${i+1}" autocomplete="off">`;
+  }
+  html += '</div>';
+  area.innerHTML = html;
+  document.querySelectorAll('.ketik-banyak').forEach((inp, i, arr) => {
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        if (i < arr.length - 1) arr[i + 1].focus();
+        else document.getElementById('submit-btn').click();
+      }
+    });
+  });
+}
+function getKetikBanyak() {
+  return Array.from(document.querySelectorAll('.ketik-banyak')).map(i => i.value.trim());
+}
+
+/* --- Tipe: Benar / Salah --- */
+function renderBenarSalah(area, q) {
+  area.innerHTML = `
+    <div class="factor-display">Pernyataan: <b>${q.statement}</b></div>
+    <div class="tf-buttons">
+      <button class="tf-btn benar" data-val="benar">✓ BENAR</button>
+      <button class="tf-btn salah" data-val="salah">✗ SALAH</button>
+    </div>
+  `;
+  document.querySelectorAll('.tf-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.tf-btn').forEach(x => x.classList.remove('selected'));
+      b.classList.add('selected');
+    });
+  });
+}
+function getBenarSalah() {
+  const sel = document.querySelector('.tf-btn.selected');
+  return sel ? sel.dataset.val : null;
+}
+
+/* --- Tipe: Isian Bertingkat --- */
+function renderIsianBertingkat(area, q) {
+  let html = '<div class="multi-step">';
+  q.steps.forEach((s, i) => {
+    const isNumeric = typeof s.answer === 'number';
+    const mode = isNumeric ? 'numeric' : 'text';
+    html += `
+      <div class="step">
+        <div class="step-label"><span class="step-num">${i+1}</span> ${s.label}</div>
+        <div class="input-row">
+          <input type="text" inputmode="${mode}" class="number-input isian-step" data-idx="${i}" placeholder="..." autocomplete="off">
+          <span class="input-label">${s.suffix || ''}</span>
+        </div>
+      </div>
+    `;
+  });
+  html += '</div>';
+  area.innerHTML = html;
+  document.querySelectorAll('.isian-step').forEach((inp, i, arr) => {
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        if (i < arr.length - 1) arr[i + 1].focus();
+        else document.getElementById('submit-btn').click();
+      }
+    });
+  });
+}
+function getIsianBertingkat() {
+  return Array.from(document.querySelectorAll('.isian-step')).map(i => i.value.trim());
+}
+
+/* --- Tipe: Drag & Drop FPB (faktor persekutuan) --- */
+function renderDragFPB(area, q) {
+  area.innerHTML = `
+    <div class="factor-display">
+      <b>Faktor ${q.aLabel}</b> = ${q.factorsA.join(', ')}<br>
+      <b>Faktor ${q.bLabel}</b> = ${q.factorsB.join(', ')}
+    </div>
+    <div class="drag-pool">
+      <div class="drag-pool-label">🎴 Kartu Faktor — Seret yang merupakan faktor PERSEKUTUAN ke kotak</div>
+      ${q.pool.map((v,i) => `<div class="drag-item" data-value="${v}" data-uid="${i}">${v}</div>`).join('')}
+    </div>
+    <div class="drop-zone" id="fpb-zone">
+      <div class="drop-zone-label">📦 Kotak Faktor Persekutuan</div>
+    </div>
+    <div class="drop-result" id="drop-result"></div>
+  `;
+  setupDragDrop(area, () => updateDragResult(q, 'fpb-zone', 'drop-result'));
+}
+function renderDragKPK(area, q) {
+  let factorHtml = '<div class="factor-display">';
+  q.factors.forEach(f => {
+    factorHtml += `<b>Kelipatan ${f.num}</b> = ${f.primes.join(', ')}<br>`;
+  });
+  factorHtml += '</div>';
+  area.innerHTML = `
+    ${factorHtml}
+    <div class="drag-pool">
+      <div class="drag-pool-label">🎴 Kartu Kelipatan — Seret yang merupakan kelipatan PERSEKUTUAN ke kotak</div>
+      ${q.pool.map((v,i) => `<div class="drag-item" data-value="${v}" data-uid="${i}">${v}</div>`).join('')}
+    </div>
+    <div class="drop-zone" id="kpk-zone">
+      <div class="drop-zone-label">📦 Kotak Kelipatan Persekutuan</div>
+    </div>
+    <div class="drop-result" id="drop-result"></div>
+  `;
+  setupDragDrop(area, () => updateDragResult(q, 'kpk-zone', 'drop-result'));
+}
+function updateDragResult(q, zoneId, resultId) {
+  const zone = document.getElementById(zoneId);
+  const items = zone.querySelectorAll('.drag-item');
+  const resEl = document.getElementById(resultId);
+  if (items.length === 0) { resEl.textContent = ''; return; }
+  const vals = Array.from(items).map(i => parseInt(i.dataset.value, 10)).sort((a, b) => a - b);
+  // FPB -> MAX of common factors; KPK -> MIN of common multiples
+  const type = q.resultType;
+  if (type === 'fpb') {
+    const mx = Math.max(...vals);
+    resEl.innerHTML = `Faktor persekutuan: ${vals.join(', ')}<br>FPB (terbesar) = <b>${mx}</b>`;
+  } else {
+    const mn = Math.min(...vals);
+    resEl.innerHTML = `Kelipatan persekutuan: ${vals.join(', ')}<br>KPK (terkecil) = <b>${mn}</b>`;
+  }
+}
+function getDragValues(zoneId) {
+  const zone = document.getElementById(zoneId);
+  return Array.from(zone.querySelectorAll('.drag-item'))
+    .map(i => parseInt(i.dataset.value, 10))
+    .sort((a, b) => a - b);
+}
+
+/* --- Drag & Drop utility (pointer events, works on touch & mouse) --- */
+let dragState = null;
+function setupDragDrop(container, onChange) {
+  container.querySelectorAll('.drag-item').forEach(item => {
+    item.addEventListener('pointerdown', e => startDrag(e, item, onChange));
+  });
+}
+function startDrag(e, item, onChange) {
+  if (item.dataset.locked) return;
+  e.preventDefault();
+  const rect = item.getBoundingClientRect();
+  const clone = item.cloneNode(true);
+  clone.classList.add('drag-clone');
+  clone.style.left = rect.left + 'px';
+  clone.style.top = rect.top + 'px';
+  clone.style.width = rect.width + 'px';
+  clone.style.height = rect.height + 'px';
+  document.body.appendChild(clone);
+  item.classList.add('dragging');
+  dragState = {
+    item, clone, onChange,
+    offsetX: e.clientX - rect.left,
+    offsetY: e.clientY - rect.top,
+    originParent: item.parentNode,
+    originNext: item.nextSibling
+  };
+  document.addEventListener('pointermove', onDragMove);
+  document.addEventListener('pointerup', onDragEnd);
+  document.addEventListener('pointercancel', onDragEnd);
+}
+function onDragMove(e) {
+  if (!dragState) return;
+  dragState.clone.style.left = (e.clientX - dragState.offsetX) + 'px';
+  dragState.clone.style.top = (e.clientY - dragState.offsetY) + 'px';
+  dragState.clone.style.display = '';
+  document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('drag-over'));
+  const below = document.elementFromPoint(e.clientX, e.clientY);
+  if (below) {
+    const zone = below.closest('.drop-zone');
+    if (zone) zone.classList.add('drag-over');
+  }
+}
+function onDragEnd(e) {
+  if (!dragState) return;
+  const { item, clone, onChange, originParent, originNext } = dragState;
+  const below = document.elementFromPoint(e.clientX, e.clientY);
+  let placed = false;
+  if (below) {
+    const zone = below.closest('.drop-zone');
+    if (zone) {
+      // remove the placeholder label child if it's the only child
+      const label = zone.querySelector('.drop-zone-label');
+      zone.appendChild(item);
+      item.classList.remove('dragging');
+      item.classList.add('placed');
+      placed = true;
+      if (onChange) onChange();
+    }
+  }
+  clone.remove();
+  if (!placed) {
+    item.classList.remove('dragging');
+    // return to original position
+    if (originNext && originNext.parentNode === originParent) {
+      originParent.insertBefore(item, originNext);
+    } else {
+      originParent.appendChild(item);
+    }
+    item.classList.remove('placed');
+    if (onChange) onChange();
+  }
+  document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('drag-over'));
+  document.removeEventListener('pointermove', onDragMove);
+  document.removeEventListener('pointerup', onDragEnd);
+  document.removeEventListener('pointercancel', onDragEnd);
+  dragState = null;
+}
+
+/* Allow removing placed items by clicking them */
+document.addEventListener('click', e => {
+  const placed = e.target.closest('.drag-item.placed');
+  if (placed && !dragState) {
+    const pool = document.querySelector('.drag-pool');
+    if (pool) {
+      pool.appendChild(placed);
+      placed.classList.remove('placed');
+      // trigger onChange if exists
+      const zone = document.querySelector('.drop-zone');
+      const resEl = document.getElementById('drop-result');
+      if (zone && resEl) {
+        const items = zone.querySelectorAll('.drag-item');
+        if (items.length === 0) {
+          resEl.textContent = '';
+        } else {
+          // find which question is active to know resultType
+          const q = QUESTIONS[STATE.current];
+          if (q) {
+            const vals = Array.from(items).map(i => parseInt(i.dataset.value, 10)).sort((a, b) => a - b);
+            if (q.resultType === 'fpb') {
+              const mx = Math.max(...vals);
+              resEl.innerHTML = `Faktor persekutuan: ${vals.join(', ')}<br>FPB (terbesar) = <b>${mx}</b>`;
+            } else {
+              const mn = Math.min(...vals);
+              resEl.innerHTML = `Kelipatan persekutuan: ${vals.join(', ')}<br>KPK (terkecil) = <b>${mn}</b>`;
+            }
+          }
+        }
+      }
+    }
+  }
+});
+
+/* ============ VALIDATION ============ */
+function arraysEqualSet(a, b) {
+  if (a.length !== b.length) return false;
+  const sa = [...a].sort((x, y) => x - y);
+  const sb = [...b].sort((x, y) => x - y);
+  return sa.every((v, i) => v === sb[i]);
+}
+function normalizeAnswer(s) {
+  return String(s).toLowerCase().replace(/\s+/g, '').replace(/,/g, '.').replace(/:/g, '.');
+}
+function checkAnswer(q, userAnswer) {
+  switch (q.type) {
+    case 'click-multi':
+      return arraysEqualSet(userAnswer, q.correct);
+    case 'click-single-image':
+      return userAnswer === q.correct;
+    case 'ketik-satu': {
+      const norm = normalizeAnswer(userAnswer);
+      return q.accept.some(a => normalizeAnswer(a) === norm);
+    }
+    case 'ketik-banyak': {
+      if (userAnswer.length !== q.correct.length) return false;
+      return userAnswer.every((v, i) => {
+        const n = normalizeAnswer(v);
+        return normalizeAnswer(String(q.correct[i])) === n;
+      });
+    }
+    case 'benar-salah':
+      return userAnswer === q.correct;
+    case 'isian-bertingkat': {
+      // Special handling for Q5 and Q10
+      if (q.id === 5) {
+        const kpkOk = normalizeAnswer(userAnswer[0]) === normalizeAnswer(String(q.steps[0].answer)) ||
+                      q.steps[0].accept.some(a => normalizeAnswer(a) === normalizeAnswer(userAnswer[0]));
+        const timeNorm = normalizeAnswer(userAnswer[1]);
+        const timeOk = q.steps[1].accept.some(a => normalizeAnswer(a) === timeNorm);
+        return kpkOk && timeOk;
+      }
+      if (q.id === 10) {
+        const a = parseInt(userAnswer[0], 10);
+        const b = parseInt(userAnswer[1], 10);
+        if (isNaN(a) || isNaN(b)) return false;
+        return q.pairs.some(p => p[0] === a && p[1] === b);
+      }
+      // generic: all steps correct
+      return q.steps.every((s, i) => {
+        const norm = normalizeAnswer(userAnswer[i]);
+        if (typeof s.answer === 'number') return normalizeAnswer(String(s.answer)) === norm;
+        return s.accept.some(a => normalizeAnswer(a) === norm);
+      });
+    }
+    case 'drag-fpb':
+      return arraysEqualSet(userAnswer, q.correct);
+    case 'drag-kpk':
+      return arraysEqualSet(userAnswer, q.correct);
+  }
+  return false;
+}
+function getUserAnswer(q) {
+  switch (q.type) {
+    case 'click-multi': return getClickMulti();
+    case 'click-single-image': return getClickSingleImage();
+    case 'ketik-satu': return getKetikSatu();
+    case 'ketik-banyak': return getKetikBanyak();
+    case 'benar-salah': return getBenarSalah();
+    case 'isian-bertingkat': return getIsianBertingkat();
+    case 'drag-fpb': return getDragValues('fpb-zone');
+    case 'drag-kpk': return getDragValues('kpk-zone');
+  }
+}
+function answerIsEmpty(q, ans) {
+  if (ans === null || ans === undefined) return true;
+  if (Array.isArray(ans)) {
+    if (ans.length === 0) return true;
+    return ans.every(v => v === '' || v === null || v === undefined);
+  }
+  return ans === '';
+}
+
+/* ============ SUBMIT & RETRY ============ */
+function handleSubmit(q) {
+  const userAnswer = getUserAnswer(q);
+  if (answerIsEmpty(q, userAnswer)) {
+    showFeedback('info', '🤔', 'Isi dulu jawabanmu sebelum diperiksa ya!');
+    return;
+  }
+  STATE.attempts++;
+  updateAttemptDots();
+  const correct = checkAnswer(q, userAnswer);
+
+  if (correct) {
+    const points = STATE.attempts === 1 ? 10 : 5;
+    STATE.results[STATE.current] = {
+      correct: true,
+      attempts: STATE.attempts,
+      points,
+      userAnswer: formatUserAnswer(q, userAnswer),
+      correctAnswer: q.correctText
+    };
+    const fb = pickFeedback(FEEDBACK_BENAR, q.id + STATE.attempts);
+    showFeedback('correct', fb[0], fb[1] + (STATE.attempts === 1 ? ' (Skor +10)' : ' (Skor +5, coba lagi next time!)'));
+    lockAnswer(q);
+    showNextButton(true);
+  } else {
+    if (STATE.attempts >= STATE.maxAttempts) {
+      // out of attempts: show correct answer
+      STATE.results[STATE.current] = {
+        correct: false,
+        attempts: STATE.attempts,
+        points: 0,
+        userAnswer: formatUserAnswer(q, userAnswer),
+        correctAnswer: q.correctText
+      };
+      const fb = pickFeedback(FEEDBACK_TAMAT, q.id);
+      showFeedback('incorrect', fb[0], fb[1] + '<br><br><b>📌 Jawaban benar:</b> ' + q.correctText + '<br><br><b>💡 Pembahasan:</b> ' + q.explanation);
+      lockAnswer(q);
+      showNextButton(false);
+    } else {
+      // can retry
+      const fb = pickFeedback(FEEDBACK_SALAH, q.id + STATE.attempts);
+      showFeedback('incorrect', fb[0], fb[1] + '<br><br><b>Masih ada 1 kesempatan lagi.</b> Periksa jawabanmu, lalu klik tombol di bawah!');
+      showRetryButton();
+    }
+  }
+}
+function formatUserAnswer(q, ans) {
+  if (Array.isArray(ans)) {
+    if (q.type === 'ketik-banyak' || q.type === 'isian-bertingkat') return ans.join(', ');
+    return ans.join(', ');
+  }
+  return String(ans);
+}
+function updateAttemptDots() {
+  const d1 = document.getElementById('dot-1');
+  const d2 = document.getElementById('dot-2');
+  if (d1) { d1.classList.add('used'); d1.classList.remove('available'); }
+  if (d2) {
+    if (STATE.attempts >= 2) { d2.classList.add('used'); d2.classList.remove('available'); }
+    else { d2.classList.add('available'); }
+  }
+}
+function showFeedback(type, emoji, text) {
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback ' + type + ' show';
+  fb.innerHTML = `<span class="feedback-emoji">${emoji}</span>${text}`;
+  fb.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+function lockAnswer(q) {
+  // disable inputs
+  document.querySelectorAll('#answer-area input').forEach(i => i.disabled = true);
+  document.querySelectorAll('#answer-area .chip').forEach(c => c.style.pointerEvents = 'none');
+  document.querySelectorAll('#answer-area .image-option').forEach(c => c.style.pointerEvents = 'none');
+  document.querySelectorAll('#answer-area .tf-btn').forEach(c => c.disabled = true);
+  document.querySelectorAll('#answer-area .drag-item').forEach(d => d.dataset.locked = '1');
+  // hide submit
+  const submit = document.getElementById('submit-btn');
+  if (submit) submit.style.display = 'none';
+}
+function showNextButton(isCorrect) {
+  const actions = document.getElementById('actions');
+  const isLast = STATE.current === QUESTIONS.length - 1;
+  const btn = document.createElement('button');
+  btn.className = 'btn ' + (isCorrect ? 'btn-secondary' : 'btn-secondary');
+  btn.innerHTML = isLast ? '🏁 Lihat Hasil' : '➡️ Soal Berikutnya';
+  btn.addEventListener('click', () => {
+    if (isLast) {
+      showScreen('result-screen');
+      renderResult();
+    } else {
+      STATE.current++;
+      renderQuestion();
+    }
+  });
+  actions.appendChild(btn);
+}
+function showRetryButton() {
+  const actions = document.getElementById('actions');
+  const submit = document.getElementById('submit-btn');
+  if (submit) submit.style.display = 'none';
+  // add retry button (clears feedback & lets user re-answer)
+  const retry = document.createElement('button');
+  retry.className = 'btn btn-primary';
+  retry.innerHTML = '🔁 Coba Lagi';
+  retry.addEventListener('click', () => {
+    document.getElementById('feedback').classList.remove('show');
+    retry.remove();
+    if (submit) submit.style.display = '';
+    // re-enable inputs (they weren't locked on first wrong attempt)
+    document.querySelectorAll('#answer-area input').forEach(i => i.disabled = false);
+    document.querySelectorAll('#answer-area .chip').forEach(c => c.style.pointerEvents = '');
+    document.querySelectorAll('#answer-area .image-option').forEach(c => c.style.pointerEvents = '');
+    document.querySelectorAll('#answer-area .tf-btn').forEach(c => c.disabled = false);
+  });
+  actions.appendChild(retry);
+}
+
+/* ============ RESULT ============ */
+function renderResult() {
+  const total = STATE.results.reduce((s, r) => s + (r ? r.points : 0), 0);
+  const maxTotal = QUESTIONS.length * 10;
+  const correctCount = STATE.results.filter(r => r && r.correct).length;
+  let stars = 0;
+  if (total >= 85) stars = 3;
+  else if (total >= 65) stars = 2;
+  else if (total >= 40) stars = 1;
+  else stars = 0;
+
+  let title, message, mascot;
+  if (stars === 3) { title = "Juara Petualangan!"; mascot = "🏆"; message = "Luar biasa, " + STATE.studentName + "! Kamu menguasai materi Faktor, Kelipatan, FPB & KPK dengan sangat baik. Pertahankan terus semangat belajarmu! 🌟"; }
+  else if (stars === 2) { title = "Petualang Hebat!"; mascot = "🦜"; message = "Kerja bagus, " + STATE.studentName + "! Kamu sudah paham sebagian besar materi. Pelajari lagi soal yang masih salah, pasti kamu bisa lebih hebat!"; }
+  else if (stars === 1) { title = "Petualang Pemberani!"; mascot = "🐯"; message = "Tetap semangat, " + STATE.studentName + "! Kamu sudah berusaha. Yuk pelajari pembahasan tiap soal dan ulangi kuis ini untuk skor lebih baik!"; }
+  else { title = "Jangan Menyerah!"; mascot = "🌱"; message = "Belum maksimal hari ini, " + STATE.studentName + ". Baca pelan-pelan pembahasan tiap soal di bawah, lalu coba ulangi petualangan ini. Kamu pasti bisa!"; }
+
+  const today = new Date();
+  const dateStr = today.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+  let starsHtml = '';
+  for (let i = 0; i < 3; i++) {
+    starsHtml += `<span class="star${i >= stars ? ' empty' : ''}">⭐</span>`;
+  }
+
+  let breakdown = `
+    <div class="breakdown-title">📋 Rincian Jawaban</div>
+    <div class="breakdown-row header">
+      <span>No</span><span>Soal</span><span>Status</span><span>Skor</span>
+    </div>
+  `;
+  QUESTIONS.forEach((q, i) => {
+    const r = STATE.results[i];
+    const status = r ? (r.correct ? '<span style="color:#2e7d32">✓ Benar</span>' : '<span style="color:#c62828">✗ Salah</span>') : '-';
+    const pts = r ? r.points : 0;
+    const statusDetail = r ? (r.correct ? `Benar (${r.attempts===1?'1x coba':'2x coba'})` : 'Salah') : '-';
+    breakdown += `
+      <div class="breakdown-row">
+        <span>${i+1}</span>
+        <span class="qshort"><b>${q.short}</b><br><span style="font-size:11px;color:#666">Jawaban benar: ${q.correctText}</span></span>
+        <span class="status">${status}</span>
+        <span class="pts">${pts}</span>
+      </div>
+    `;
+  });
+  breakdown += `
+    <div class="breakdown-row" style="border-top:2px solid var(--green-2);font-weight:bold;background:var(--cream);border-radius:8px;margin-top:6px">
+      <span></span><span>TOTAL SKOR</span><span></span><span class="pts" style="color:var(--orange);font-size:18px">${total}/${maxTotal}</span>
+    </div>
+  `;
+
+  const card = document.getElementById('result-card');
+  card.innerHTML = `
+    <div class="result-mascot">${mascot}</div>
+    <h2 class="result-title">${title}</h2>
+    <div class="result-identity">
+      👤 <b>${STATE.studentName}</b> &nbsp;|&nbsp; 🎒 Kelas <b>${STATE.studentClass}</b><br>
+      <span style="font-size:13px;color:#666">📅 ${dateStr}</span>
+    </div>
+    <div class="stars">${starsHtml}</div>
+    <div class="score-display">${total}<span class="score-max"> / ${maxTotal}</span></div>
+    <div style="font-size:16px;color:var(--green-3);margin-bottom:6px">
+      ✅ Benar: <b>${correctCount}</b> dari ${QUESTIONS.length} soal
+    </div>
+    <div class="result-message">${message}</div>
+    <div class="result-breakdown">${breakdown}</div>
+    <div class="signature no-print">
+      <div><div class="line">Orang Tua/Wali</div></div>
+      <div><div class="line">Guru Mapel Matematika</div></div>
+    </div>
+    <div class="actions no-print" style="margin-top:18px">
+      <button class="btn btn-primary" onclick="window.print()">🖨️ Cetak Hasil</button>
+      <button class="btn btn-ghost" id="restart-btn">🔁 Ulangi Kuis</button>
+    </div>
+  `;
+  document.getElementById('restart-btn').addEventListener('click', () => {
+    STATE.current = 0;
+    STATE.results = [];
+    nameInput.value = '';
+    classInput.value = '';
+    checkStart();
+    showScreen('cover-screen');
+  });
+}
+
+/* ============ INIT ============ */
+checkStart();
+</script>
+
+</body>
+</html>
